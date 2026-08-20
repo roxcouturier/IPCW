@@ -299,6 +299,27 @@ library(ggh4x)
 load("results_ipcw_0.75.RData")  # loads an object named `results`
 
 # ---- 2. Reference ("true") marginal HR values ----
+
+# generate_data_simple <- function(n = 1000, hx0 = 0.115, beta_x = log(0.75),
+                                 #betax_z1 = log(0.5), seed = NULL) {
+  #if (!is.null(seed)) set.seed(seed)
+  #trt <- rbinom(n, 1, 0.5)
+  #Z1 <- rbinom(n, 1, 0.5)
+  
+  #rate_x <- hx0 * exp(beta_x * trt + betax_z1 * Z1)
+  #Tx <- rexp(n, rate = rate_x)
+  #time <- Tx
+  #status <- 1
+  #data.frame(trt = trt, Z1 = Z1, time = time, status = status)
+#}
+
+#set.seed(2025)
+#data <- generate_data_simple(n = 10000000, hx0 = 0.115, beta_x = log(0.75),
+                             betax_z1 = log(2), seed = NULL)
+
+#fit <- coxph(Surv(time, status)~trt, data=data)  
+#fit$coefficients
+                    
 # The true log-HR used to simulate the data is log(HR_trt_event), but the
 # *marginal* HR (what a correctly specified, unbiased estimator recovers)
 # differs slightly across HR_x_z1 due to non-collapsibility. These
@@ -315,8 +336,7 @@ bias_data <- results %>%
     bias_ipw_both      = (exp(ipw_both.trt)      - ref_value) / ref_value * 100,
     bias_ipw_trtonly   = (exp(ipw_trtonly.trt)   - ref_value) / ref_value * 100,
     bias_ipw_Z1only    = (exp(ipw_Z1only.trt)    - ref_value) / ref_value * 100,
-    # cox_adjusted is already on the HR scale (see simulate_cox), no exp() needed
-    bias_standardized  = (cox_adjusted           - ref_value) / ref_value * 100
+    bias_standardized  = (exp(cox_adjusted)        - ref_value) / ref_value * 100
   )
 
 # ---- 4. Aggregate mean bias + 95% CI by scenario, for one estimator ----
