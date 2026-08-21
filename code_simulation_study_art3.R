@@ -123,7 +123,7 @@ simulate_cox <- function(n = 500, beta_x, beta_a, betax_z1, betaa_z1) {
   # convert to a marginal (standardized) hazard ratio.
   data_trt1 <- data; data_trt1$trt <- 1
   data_trt0 <- data; data_trt0$trt <- 0
-  t_eval <- max(data$time)
+  t_eval <- median(data$time)
   
   surv1 <- summary(survfit(cox_adjusted, newdata = data_trt1),
                    times = t_eval, extend = TRUE)$surv
